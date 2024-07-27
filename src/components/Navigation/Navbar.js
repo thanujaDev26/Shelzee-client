@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import {
     Dialog,
     DialogBackdrop,
@@ -89,22 +89,27 @@ const navigation = {
     ],
 }
 
-export default function Example() {
+export default function Navbar(props) {
     const [open, setOpen] = useState(false)
     const [selectedTab, setSelectedTab] = useState(0);
-    const [isSignedIn, setIsSignedIn] = useState(false);
-    const [userName, setUserName] = useState('');
+    const [isSignedIn, setIsSignedIn] = useState(!!props.loggedUser);
+    const [userName, setUserName] = useState(props.loggedUser ? props.loggedUser.name : '');
+
+    useEffect(() => {
+        if (props.loggedUser) {
+            setUserName(props.loggedUser.name);
+            setIsSignedIn(true);
+        }
+    }, [props.loggedUser]);
 
     let offer = 10000;
 
     const closeSidebar = () => setOpen(false);
 
     const handleSignOut = () => {
-        // Implement sign out logic here
         setIsSignedIn(false);
         setUserName('');
     };
-
     return (
         <div className="bg-white">
             {/* Mobile menu */}
@@ -113,7 +118,6 @@ export default function Example() {
                     transition
                     className="fixed inset-0 bg-black bg-opacity-25 transition-opacity duration-300 ease-linear"
                 />
-
                 <div className="fixed inset-0 z-40 flex">
                     <DialogPanel
                         transition

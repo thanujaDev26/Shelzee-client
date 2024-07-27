@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { Link } from 'react-router-dom';
 
@@ -31,16 +31,50 @@ const GoogleIcon = () => (
     </svg>
 );
 
-export default function Registration() {
+export default function Registration(props) {
+    let [userInput, setUserInput] = useState({
+        name : '', contact : '', password : ''
+    });
 
     const handleGoogleLoginSuccess = (response) => {
         console.log(response);
     };
-
-
     const handleGoogleLoginFailure = (error) => {
         console.error('Google login failed:', error);
     };
+    let getUserName = (e) =>{
+        setUserInput((preve)=>{
+            return{
+                ...preve,
+                name: e.target.value
+            }
+        })
+    }
+    let getUserContact = (e) =>{
+        setUserInput((preve)=>{
+            return{
+                ...preve,
+                contact: e.target.value
+            }
+        })
+    }
+    let getUserPassowrd = (e) =>{
+        setUserInput((preve)=>{
+            return{
+                ...preve,
+                password: e.target.value
+            }
+        })
+    }
+    let onSubmit = (e) =>{
+        e.preventDefault();
+        let { name, contact, password } = userInput;
+        let user ={
+            name: name, contact: contact,password: password,
+        }
+        props.createNewUser(user)
+    }
+
 
     return (
         <GoogleOAuthProvider clientId={clientId}>
@@ -58,7 +92,6 @@ export default function Registration() {
                     />
                 </div>
 
-                {/* Registration Form */}
                 <div className="flex-1 sm:mx-auto sm:w-full sm:max-w-sm lg:w-1/2 lg:py-16">
                     <div className="sm:mx-auto sm:w-full sm:max-w-sm lg:hidden">
                         <video
@@ -76,7 +109,7 @@ export default function Registration() {
                         <h2 className="mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                             Create an account today!
                         </h2>
-                        <form action="#" method="POST" className="space-y-6">
+                        <form onSubmit={onSubmit} method="POST" className="space-y-6">
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
                                     Name
@@ -84,6 +117,8 @@ export default function Registration() {
                                 <div className="mt-2">
                                     <input
                                         id="name"
+                                        value={userInput.name}
+                                        onChange={getUserName}
                                         name="name"
                                         type="name"
                                         required
@@ -99,6 +134,8 @@ export default function Registration() {
                                 <div className="mt-2">
                                     <input
                                         id="contact"
+                                        value={userInput.contact}
+                                        onChange={getUserContact}
                                         name="contact"
                                         type="text"
                                         required
@@ -118,6 +155,8 @@ export default function Registration() {
                                 <div className="mt-2">
                                     <input
                                         id="password"
+                                        value={userInput.password}
+                                        onChange={getUserPassowrd}
                                         name="password"
                                         type="password"
                                         required

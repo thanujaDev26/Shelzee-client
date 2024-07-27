@@ -9,10 +9,11 @@ import Login from "./components/Login/Login";
 import Registration from "./components/Create/Registration";
 
 import axios from "axios";
+import { useState,useEffect } from "react";
 
 function App() {
 
-    let getNewUser = async (user) =>{
+    let createNewUser = async (user) =>{
         try{
             await axios.post('https://shellzee-f013e-default-rtdb.asia-southeast1.firebasedatabase.app/users.json', user)
                 .then((response) => {
@@ -26,11 +27,75 @@ function App() {
             console.log(err);
         }
     }
+
+    let [loggedUser,setLoggedUser] = useState({
+        name :'', contact : ''
+    });
+
+    let getSignUser = async(user, callback)=>{
+        try{
+            await axios.get('https://shellzee-f013e-default-rtdb.asia-southeast1.firebasedatabase.app/users.json')
+                .then((response) => {
+                  if(response && response.status === 200){
+                      // if(response.data.contact === user.contact && response.data.password === user.password){
+                      //     console.log("Login Successful!")
+                      // }
+                      // else {
+                      //     console.log("Invalid Login!")
+                      //console.log(response.data);
+                      const users = response.data;
+                      let userFound = false;
+                      for (const key in users) {
+                          if (users.hasOwnProperty(key)) {
+                              const storedUser = users[key];
+                              if (storedUser.contact === user.contact && storedUser.password === user.password) {
+                                  userFound = true;
+                                  console.log("Login Successful!");
+                                  setLoggedUser((prevState)=>{
+                                      return{
+                                          ...prevState,
+                                          name : storedUser.name,
+                                          contact : storedUser.contact
+                                      }
+                                      }
+                                  )
+                                  // console.log("Name is : " + loggedUser.name);
+                                  callback(true)
+                                  break;
+                              }
+                          }
+                      }
+                      if (!userFound) {
+                          console.log("Invalid Login!");
+                          callback(false);
+                      }
+                  }
+                  else {
+                      console.log("No users found in the database.");
+                  }
+                })
+                .catch((error)=>{
+                    console.log(error);
+                })
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+
+    useEffect(() => {
+        if (loggedUser.name && loggedUser.contact) {
+            console.log("Logged in user details:", loggedUser);
+        }
+    }, [loggedUser]);
+
+    useEffect(() => {
+        getSignUser(loggedUser);
+    }, []);
+
   return (
       <div>
-
-
-          <Navbar/>
+          <Navbar loggedUser={loggedUser}/>
           <Routes>
               <Route path="/"  element={<Home/>}/>
               <Route path="/home" element={<Home/>}/>
@@ -38,8 +103,8 @@ function App() {
               <Route path="/blogs" element={<Blogs/>}/>
               <Route path="/join-us" element={<Joinus/>}/>
               <Route path="/about" element={<About/>}/>
-              <Route path="/sign-in" element={<Login/>}/>
-              <Route path="/create-account" element={<Registration getNewUser={getNewUser}/>}/>
+              <Route path="/sign-in" element={<Login getSignUser={getSignUser}/>}/>
+              <Route path="/create-account" element={<Registration createNewUser={createNewUser}/>}/>
           </Routes>
       </div>
   );
