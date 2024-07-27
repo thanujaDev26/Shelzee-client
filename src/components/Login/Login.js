@@ -16,7 +16,6 @@ export default function Login(props) {
             contact: e.target.value
         }));
     };
-
     const getUserPassword = (e) => {
         setUserInput((prev) => ({
             ...prev,
@@ -32,10 +31,10 @@ export default function Login(props) {
         props.getSignUser(signInUser, (success) => {
             if (success) {
                 navigate('/home');
+            } else {
                 setUserInput({
                     contact: '', password: ''
                 })
-            } else {
                 setShowModal(true);
             }
         });

@@ -93,11 +93,11 @@ export default function Navbar(props) {
     const [open, setOpen] = useState(false)
     const [selectedTab, setSelectedTab] = useState(0);
     const [isSignedIn, setIsSignedIn] = useState(!!props.loggedUser);
-    const [userName, setUserName] = useState(props.loggedUser ? props.loggedUser.name : '');
+    const [userName, setUserName] = useState(props.loggedUser ? props.loggedUser.name.split(' ')[0] :  '');
 
     useEffect(() => {
         if (props.loggedUser) {
-            setUserName(props.loggedUser.name);
+            setUserName(props.loggedUser.name.split(' ')[0]);
             setIsSignedIn(true);
         }
     }, [props.loggedUser]);
@@ -202,15 +202,17 @@ export default function Navbar(props) {
                             ))}
                         </div>
 
-                        {isSignedIn ? (
+                        {props.isUserLogged ? (
                             <div className="space-y-6 border-t border-gray-200 px-4 py-6">
                                 <div className="flow-root">
                                     <p className="-m-2 block p-2 font-medium text-gray-900">
-                                        Welcome, {userName}
+                                        Welcome, {userName}!
                                     </p>
                                 </div>
+                                <span aria-hidden="true" className="h-6 w-px bg-gray-200"/>
                                 <div className="flow-root">
-                                    <button onClick={handleSignOut} className="-m-2 block p-2 font-medium text-gray-900">
+                                    <button onClick={handleSignOut}
+                                            className="-m-2 block p-2 font-medium text-gray-900">
                                         Logout
                                     </button>
                                 </div>
@@ -369,7 +371,7 @@ export default function Navbar(props) {
                                                 className="h-8 w-8 rounded-full"
                                             />
                                             <span className="text-sm font-medium text-gray-700">
-                                                Welcome, {userName}
+                                                Welcome, {userName}!
                                             </span>
                                             <button
                                                 onClick={handleSignOut}
@@ -397,16 +399,15 @@ export default function Navbar(props) {
                                     )}
                                 </div>
 
-                                {/* Search */}
-                                <div className="flex lg:ml-6">
+                                {isSignedIn && <div className="flex lg:ml-6">
                                     <Link to="/search" className="p-2 text-gray-400 hover:text-gray-500">
                                         <span className="sr-only">Search</span>
                                         <MagnifyingGlassIcon aria-hidden="true" className="h-6 w-6"/>
                                     </Link>
-                                </div>
+                                </div>}
 
-                                {/* Cart */}
-                                <div className="ml-4 flow-root lg:ml-6">
+
+                                {isSignedIn && <div className="ml-4 flow-root lg:ml-6">
                                     <Link to="/cart" className="group -m-2 flex items-center p-2">
                                         <ShoppingBagIcon
                                             aria-hidden="true"
@@ -416,7 +417,7 @@ export default function Navbar(props) {
                                             className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
                                         <span className="sr-only">items in cart, view bag</span>
                                     </Link>
-                                </div>
+                                </div>}
                             </div>
                         </div>
                     </div>
