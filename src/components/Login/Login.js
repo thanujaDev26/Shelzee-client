@@ -10,15 +10,19 @@ export default function Login(props) {
 
     const [showPassword, setShowPassword] = useState(false);
     const [isAdminLogin, setIsAdminLogin] = useState(false);
-    const [loginRoute, setLoginRoute] = useState('/sign-in'); // Default route for user login
+    const [loginRoute, setLoginRoute] = useState('/sign-in');
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
     const toggleLoginType = () => {
-        setIsAdminLogin((prev) => !prev);
-        setLoginRoute((prev) => prev === '/sign-in' ? '/admin-sign' : '/sign-in');
+        setIsAdminLogin((prev) => {
+            const newLoginType = !prev;
+            const newRoute = newLoginType ? '/admin-sign' : '/sign-in';
+            navigate(newRoute);
+            return newLoginType;
+        });
     };
 
     const navigate = useNavigate();
@@ -54,6 +58,7 @@ export default function Login(props) {
             }
         });
     };
+
 
     return (
         <div className="flex min-h-full justify-center lg:px-8">
@@ -126,6 +131,7 @@ export default function Login(props) {
                     </form>
                     <button
                         onClick={toggleLoginType}
+                        id="toggleLoginType"
                         className="mt-4 w-full flex justify-center text-sm font-semibold text-indigo-600 hover:text-indigo-500"
                     >
                         {isAdminLogin ? 'Switch to User Login' : 'Switch to Admin Login'}
@@ -138,19 +144,19 @@ export default function Login(props) {
                         </Link>
                     </p>
                 </div>
-                <div className="hidden lg:block lg:w-[calc(50%-8px)] lg:flex lg:items-center lg:justify-center mx-2 p-4 lg:p-0">
-                    <div className="w-full h-0 aspect-w-1 aspect-h-1">
-                        <video
-                            src={require('../../images/Dashboard.mp4')}
-                            alt="Your Company"
-                            className="w-full h-full object-cover"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                        />
-                    </div>
-                </div>
+                {/*<div className="hidden lg:block lg:w-[calc(50%-8px)] lg:flex lg:items-center lg:justify-center mx-2 p-4 lg:p-0">*/}
+                {/*    <div className="w-full h-0 aspect-w-1 aspect-h-1">*/}
+                {/*        <video*/}
+                {/*            src={require('../../images/Dashboard.mp4')}*/}
+                {/*            alt="Your Company"*/}
+                {/*            className="w-full h-full object-cover"*/}
+                {/*            autoPlay*/}
+                {/*            loop*/}
+                {/*            muted*/}
+                {/*            playsInline*/}
+                {/*        />*/}
+                {/*    </div>*/}
+                {/*</div>*/}
             </div>
             <Modal showModal={showModal} handleClose={() => setShowModal(false)} />
         </div>

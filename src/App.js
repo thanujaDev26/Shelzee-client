@@ -120,6 +120,7 @@ function App() {
                 <Route path="/sign-in" element={<Login getSignUser={getSignUser}/>}/>
                 <Route path="/create-account" element={<Registration createNewUser={createNewUser}/>}/>
                 <Route path="/admin-dashboard" element={<Dashboard/>}/>
+                <Route path="admin-sign" element={<Login getSignUser={getSignUser}/>}/>
             </Routes>
         </div>
     );
