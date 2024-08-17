@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 
 const clientId = '756817282935-lpjt725ikqbtq8th1vluapufil479psl.apps.googleusercontent.com';
 
@@ -35,6 +35,8 @@ export default function Registration(props) {
     let [userInput, setUserInput] = useState({
         name : '', contact : '', password : ''
     });
+
+    let navigate = useNavigate();
 
     const handleGoogleLoginSuccess = (response) => {
         console.log(response);
@@ -73,6 +75,7 @@ export default function Registration(props) {
             name: name, contact: contact,password: password,
         }
         props.createNewUser(user)
+
     }
 
 
@@ -129,7 +132,7 @@ export default function Registration(props) {
                             </div>
                             <div>
                                 <label htmlFor="contact" className="block text-sm font-medium leading-6 text-gray-900">
-                                    Email or Phone Number
+                                    Email
                                 </label>
                                 <div className="mt-2">
                                     <input

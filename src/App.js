@@ -7,25 +7,40 @@ import Blogs from "./components/Blogs/Blogs";
 import Joinus from "./components/Join/Joinus";
 import Login from "./components/Login/Login";
 import Registration from "./components/Create/Registration";
-
 import axios from "axios";
 import { useState, useEffect } from "react";
+import Products from "./components/Products/Products";
+import Template from "./components/Products/Template";
+import Dashboard from "./components/Admin/Dashboard";
 
 function App() {
-
     let [isUserLogged, setIsUserLogged] = useState(false);
+    let [isUserLoggedout, setIsUserLoggedout] = useState(false); //Use kre nha, podi wdkta use kre
 
-    let createNewUser = async (user) =>{
-        try{
+    useEffect(() => {
+        // if (loggedUser.name && loggedUser.contact) {
+        //     setIsUserLogged(true);
+        //     console.log("Logged in user details:", loggedUser);
+        // }
+        let isUserLoggedOut = localStorage.getItem('isLoggedIn');
+        if(isUserLoggedout === '1'){
+            setIsUserLoggedout(true)
+        }
+    }, []);
+
+    let setUserLoggedOut = (value) =>{
+        setIsUserLoggedout(value)
+    }
+    let createNewUser = async (user) => {
+        try {
             await axios.post('https://shellzee-f013e-default-rtdb.asia-southeast1.firebasedatabase.app/users.json', user)
                 .then((response) => {
                     console.log(response);
                 })
-                .catch((error)=>{
+                .catch((error) => {
                     console.log(error);
                 })
-        }
-        catch(err){
+        } catch (err) {
             console.log(err);
         }
     }
@@ -34,6 +49,14 @@ function App() {
         const savedUser = localStorage.getItem('loggedUser');
         return savedUser ? JSON.parse(savedUser) : { name: '', contact: '' };
     });
+
+    const signOut = () => {
+        localStorage.removeItem('loggedUser');
+        setLoggedUser({ name: '', contact: '' });
+        setIsUserLogged(false);
+        localStorage.removeItem('loggedUser');
+        setIsUserLoggedout(false)
+    };
 
     let getSignUser = async (user, callback) => {
         try {
@@ -58,7 +81,8 @@ function App() {
                                         return updatedUser;
                                     });
                                     callback(true);
-                                    setIsUserLogged(true)
+                                    setIsUserLogged(true);
+                                    localStorage.setItem('loggedUser', JSON.stringify(user));
                                     break;
                                 }
                             }
@@ -76,31 +100,26 @@ function App() {
                     console.log(error);
                     callback(false);
                 })
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err);
             callback(false);
         }
     }
 
-    useEffect(() => {
-        if (loggedUser.name && loggedUser.contact) {
-            console.log("Logged in user details:", loggedUser);
-        }
-    }, [loggedUser]);
-
     return (
         <div>
-            <Navbar loggedUser={loggedUser} isUserLogged={isUserLogged}/>
+            <Navbar loggedUser={loggedUser} isUserLogged={isUserLogged} signOut={signOut} setUserLoggedOut={setUserLoggedOut}/>
             <Routes>
-                <Route path="/"  element={<Home/>}/>
+                <Route path="/" element={<Home/>}/>
                 <Route path="/home" element={<Home/>}/>
+                <Route path="/products" element={<Products/>}/>
+                <Route path="/products/:productId" element={<Template />}/>
                 <Route path="/about-us" element={<About/>}/>
                 <Route path="/blogs" element={<Blogs/>}/>
                 <Route path="/join-us" element={<Joinus/>}/>
-                <Route path="/about" element={<About/>}/>
                 <Route path="/sign-in" element={<Login getSignUser={getSignUser}/>}/>
                 <Route path="/create-account" element={<Registration createNewUser={createNewUser}/>}/>
+                <Route path="/admin-dashboard" element={<Dashboard/>}/>
             </Routes>
         </div>
     );
