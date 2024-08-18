@@ -42,11 +42,13 @@ export default function Navbar(props) {
     let offer = 10000;
 
     useEffect(() => {
+        const userName = props.loggedUser?.name?.split(' ')[0] || '';
         if (props.loggedUser && props.isUserLogged) {
-            setUserName(props.loggedUser.name.split(' ')[0]);
+            localStorage.setItem('user', JSON.stringify(props.loggedUser));
+            setUserName(userName);
             setIsSignedIn(true);
         }
-    }, [props.loggedUser]);
+    }, [props.loggedUser, props.isUserLogged]);
 
     useEffect(() => {
         console.log("Current location:", location.pathname);
@@ -55,6 +57,7 @@ export default function Navbar(props) {
     const closeSidebar = () => setOpen(false);
 
     const handleSignOut = () => {
+        localStorage.removeItem('user');
         setIsSignedIn(false);
         setUserName('');
         props.setUserLoggedOut(true);
@@ -73,6 +76,8 @@ export default function Navbar(props) {
             navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
         }
     };
+
+    const isProductPage = location.pathname === '/products';
 
     return (
         <div className="bg-white">
@@ -97,7 +102,6 @@ export default function Navbar(props) {
                             </div>
                             <TabPanels as={Fragment}>
                                 <TabPanel key="Products" className="space-y-10 px-4 pb-8 pt-10">
-
 
                                 </TabPanel>
                             </TabPanels>
@@ -184,47 +188,55 @@ export default function Navbar(props) {
                                             <p className="inline-block text-sm font-medium text-gray-700">
                                                 Welcome, {userName}!
                                             </p>
-                                            <button onClick={handleSignOut} className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                                            <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
+                                            <Link to="/sign-in" onClick={handleSignOut} className="text-sm font-medium text-gray-700 hover:text-gray-800">
                                                 Logout
-                                            </button>
+                                            </Link>
                                         </>
                                     ) : (
                                         <>
                                             <Link to="/sign-in" className="text-sm font-medium text-gray-700 hover:text-gray-800">
                                                 Sign in
                                             </Link>
-                                            <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
+                                            <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
                                             <Link to="/create-account" className="text-sm font-medium text-gray-700 hover:text-gray-800">
                                                 Create account
                                             </Link>
                                         </>
                                     )}
                                 </div>
-                                {location.pathname === '/products' && (
-                                    <div className="ml-4 flex lg:ml-6">
-                                        <div className="relative">
-                                            <input
-                                                type="text"
-                                                value={searchQuery}
-                                                onChange={handleSearchChange}
-                                                placeholder="Search products"
-                                                className="border rounded-md py-2 px-3 text-sm text-gray-900"
-                                            />
-                                            <button type="button" onClick={handleSearchSubmit} className="absolute right-2 top-2">
-                                                <MagnifyingGlassIcon aria-hidden="true" className="h-5 w-5 text-gray-500" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
-                                {isSignedIn && (
-                                    <div className="ml-4 flow-root lg:ml-6">
-                                        <Link to="/cart" className="group -m-2 flex items-center p-2">
-                                            <ShoppingBagIcon className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
-                                            <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
-                                            <span className="sr-only">items in cart, view bag</span>
-                                        </Link>
-                                    </div>
-                                )}
+                                <div className="hidden lg:ml-8 lg:flex">
+                                    {isSignedIn && isProductPage && (
+                                        <>
+                                            <div className="relative flex items-center">
+                                                <input
+                                                    id="search"
+                                                    type="text"
+                                                    className={`ml-3 block w-60 min-w-0 rounded-full border border-gray-400 px-4 py-1.5 text-gray-700 focus:border-black focus:outline-none focus:ring-black sm:text-sm transition duration-200 ease-in-out ${searchActive ? 'ring-1 ring-black' : ''}`}
+                                                    placeholder="Search for products"
+                                                    value={searchQuery}
+                                                    onChange={handleSearchChange}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="ml-3 p-1 text-gray-400 hover:text-gray-500"
+                                                    onClick={handleSearchSubmit}
+                                                >
+                                                    <span className="sr-only">Search</span>
+                                                    <MagnifyingGlassIcon className="h-5 w-5" aria-hidden="true" />
+                                                </button>
+                                            </div>
+                                            <div className="ml-4 flow-root lg:ml-6">
+                                                <Link to="/cart" className="group -m-2 flex items-center p-2">
+                                                    <ShoppingBagIcon
+                                                        className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                                                        aria-hidden="true"
+                                                    />
+                                                </Link>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -47,16 +47,31 @@ export default function Login(props) {
         const { contact, password } = userInput;
         const signInUser = { contact, password, isAdmin: isAdminLogin };
 
-        props.getSignUser(signInUser, (success) => {
-            if (success) {
-                navigate(isAdminLogin ? '/admin-dashboard' : '/home');
-            } else {
-                setUserInput({
-                    contact: '', password: ''
-                });
-                setShowModal(true);
-            }
-        });
+        if(!isAdminLogin){
+            props.getSignUser(signInUser, (success) => {
+                if (success) {
+                    navigate('/home');
+                } else {
+                    setUserInput({
+                        contact: '', password: ''
+                    });
+                    setShowModal(true);
+                }
+            })
+        }
+        else{
+            props.getAdminSign(signInUser, (success) =>{
+                if (success) {
+                    navigate('/admin-dashboard');
+                }
+                else {
+                    setUserInput({
+                        contact: '', password: ''
+                    });
+                    setShowModal(true);
+                }
+            });
+        }
     };
 
 

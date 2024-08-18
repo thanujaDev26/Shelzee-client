@@ -83,17 +83,17 @@ export default function Registration(props) {
         <GoogleOAuthProvider clientId={clientId}>
             <div className="flex min-h-full flex-1 flex-col lg:flex-row lg:justify-center px-6 py-12 lg:px-8">
                 {/* Video Section */}
-                <div className="hidden lg:flex lg:w-1/2 lg:items-center lg:justify-center">
-                    <video
-                        src={require('../../images/ShellZee.lk.mp4')}
-                        alt="Your Company"
-                        className="w-full max-h-screen object-cover"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                    />
-                </div>
+                {/*<div className="hidden lg:flex lg:w-1/2 lg:items-center lg:justify-center">*/}
+                {/*    <video*/}
+                {/*        src={require('../../images/ShellZee.lk.mp4')}*/}
+                {/*        alt="Your Company"*/}
+                {/*        className="w-full max-h-screen object-cover"*/}
+                {/*        autoPlay*/}
+                {/*        loop*/}
+                {/*        muted*/}
+                {/*        playsInline*/}
+                {/*    />*/}
+                {/*</div>*/}
 
                 <div className="flex-1 sm:mx-auto sm:w-full sm:max-w-sm lg:w-1/2 lg:py-16">
                     <div className="sm:mx-auto sm:w-full sm:max-w-sm lg:hidden">
