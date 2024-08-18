@@ -145,7 +145,12 @@ function App() {
                 <Route path="/sign-in" element={<Login getSignUser={getSignUser} getAdminSign={getAdminSign} />} />
                 <Route path="/create-account" element={<Registration createNewUser={createNewUser} />} />
                 <Route path="/admin-dashboard" element={<Dashboard />} />
-                <Route path="admin-sign" element={<Login getAdminSign={getAdminSign} getSignUser={getSignUser} />} />
+                <Route path="/admin-sign" element={<Login getAdminSign={getAdminSign} getSignUser={getSignUser} />} />
+                <Route path="/manage-products" element={<Dashboard/>}/>
+                <Route path="/manage-users" element={<Dashboard/>}/>
+                <Route path="/manage-blogs" element={<Dashboard/>}/>
+                <Route path="/manage-info" element={<Dashboard/>}/>
+                <Route path="/manage-adds" element={<Dashboard/>}/>
             </Routes>
         </div>
     );
