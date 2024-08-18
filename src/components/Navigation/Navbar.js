@@ -35,18 +35,20 @@ export default function Navbar(props) {
     const [userName, setUserName] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [searchActive, setSearchActive] = useState(false);
-
+    const [isAdminLogin, setIsAdminLogin] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
 
     let offer = 10000;
 
     useEffect(() => {
+        let isAdmin = localStorage.getItem('admin') !== null;
         const userName = props.loggedUser?.name?.split(' ')[0] || '';
         if (props.loggedUser && props.isUserLogged) {
             localStorage.setItem('user', JSON.stringify(props.loggedUser));
             setUserName(userName);
             setIsSignedIn(true);
+            setIsAdminLogin(isAdmin)
         }
     }, [props.loggedUser, props.isUserLogged]);
 
@@ -58,8 +60,11 @@ export default function Navbar(props) {
 
     const handleSignOut = () => {
         localStorage.removeItem('user');
+        localStorage.removeItem('loggedUser');
+        localStorage.removeItem('admin');
         setIsSignedIn(false);
         setUserName('');
+        setIsAdminLogin(false);
         props.setUserLoggedOut(true);
         navigate('/sign-in');
     };
@@ -178,17 +183,28 @@ export default function Navbar(props) {
                                             {page.name}
                                         </Link>
                                     ))}
+                                    {isAdminLogin &&
+                                    <Link key="Dashboard" to="/admin-dashboard" className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
+                                        Dashboard
+                                    </Link>}
                                 </div>
                             </PopoverGroup>
                             <div className="ml-auto flex items-center">
                                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                                     {isSignedIn ? (
                                         <>
-                                            <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="user avatar" />
-                                            <p className="inline-block text-sm font-medium text-gray-700">
-                                                Welcome, {userName}!
-                                            </p>
-                                            <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
+                                            {!isAdminLogin &&
+                                                <div>
+                                                    <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white mr-3"
+                                                         src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                                         alt="user avatar"/>
+                                                    <p className="inline-block text-sm font-medium text-gray-700">
+                                                        Welcome, {userName}!
+                                                    </p>
+                                                    <span aria-hidden="true" className="h-6 w-px bg-gray-200"/>
+                                                </div>
+                                            }
+
                                             <Link to="/sign-in" onClick={handleSignOut} className="text-sm font-medium text-gray-700 hover:text-gray-800">
                                                 Logout
                                             </Link>
@@ -206,7 +222,7 @@ export default function Navbar(props) {
                                     )}
                                 </div>
                                 <div className="hidden lg:ml-8 lg:flex">
-                                    {isSignedIn && isProductPage && (
+                                    {isSignedIn && isProductPage &&(
                                         <>
                                             <div className="relative flex items-center">
                                                 <input

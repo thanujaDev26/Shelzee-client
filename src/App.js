@@ -17,7 +17,7 @@ function App() {
     const [isUserLogged, setIsUserLogged] = useState(false);
     const [loggedUser, setLoggedUser] = useState({ name: '', contact: '' });
     const [isUserLoggedout, setIsUserLoggedout] = useState(false);
-
+    const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
     useEffect(() => {
         // Restore login state from localStorage
         const savedUser = localStorage.getItem('loggedUser');
@@ -29,6 +29,7 @@ function App() {
 
     const signOut = () => {
         localStorage.removeItem('loggedUser');
+        localStorage.removeItem('admin');
         setLoggedUser({ name: '', contact: '' });
         setIsUserLogged(false);
         setIsUserLoggedout(false);
@@ -36,6 +37,7 @@ function App() {
 
     const setUserLoggedOut = (value) => {
         setIsUserLoggedout(value);
+        setIsAdminLoggedIn(false)
         localStorage.removeItem('loggedUser');
         localStorage.removeItem('user');
     };
@@ -107,8 +109,10 @@ function App() {
                             contact: storedUser.contact
                         });
                         localStorage.setItem('loggedUser', JSON.stringify(storedUser));
+                        localStorage.setItem('admin', JSON.stringify(storedUser));
                         setIsUserLogged(true);
                         callback(true);
+                        setIsAdminLoggedIn(true);
                         break;
                     }
                 }
@@ -129,7 +133,7 @@ function App() {
 
     return (
         <div>
-            <Navbar loggedUser={loggedUser} isUserLogged={isUserLogged} signOut={signOut} setUserLoggedOut={setUserLoggedOut} />
+            <Navbar loggedUser={loggedUser} isUserLogged={isUserLogged} signOut={signOut} setUserLoggedOut={setUserLoggedOut} isAdminLoggedIn={isAdminLoggedIn}/>
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/home" element={<Home />} />
