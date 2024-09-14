@@ -1,42 +1,38 @@
+import { Link } from 'react-router-dom';
 
 const products = [
     {
-        id: 1,
+        id: '66ba21d73e8314fe8c841924',
         name: 'Basic Tee',
-        href: '#',
         imageSrc: require('../../images/gentsTwo.jpeg'),
         imageAlt: "Front of men's Basic Tee in black.",
         price: '$35',
         color: 'Black',
     },
     {
-        id: 1,
+        id: '66ba20ef96612164bcdd9c72',
         name: 'Basic Tee',
-        href: '#',
         imageSrc: require('../../images/tshirtone.jpeg'),
         imageAlt: "Front of men's Basic Tee in black.",
         price: '$35',
         color: 'Black',
     },
     {
-        id: 1,
+        id: '66ba4b9481696098d451114e',
         name: 'Basic Tee',
-        href: '#',
         imageSrc: require('../../images/ladiesone.jpeg'),
         imageAlt: "Front of men's Basic Tee in black.",
         price: '$35',
         color: 'Black',
     },
     {
-        id: 1,
+        id: 4,
         name: 'Basic Tee',
-        href: '#',
         imageSrc: require('../../images/caps.jpeg'),
         imageAlt: "Front of men's Basic Tee in black.",
         price: '$35',
         color: 'Black',
     },
-
 ]
 
 export default function Product_deck() {
@@ -58,10 +54,10 @@ export default function Product_deck() {
                             <div className="mt-4 flex justify-between">
                                 <div>
                                     <h3 className="text-sm text-gray-700">
-                                        <a href={product.href}>
+                                        <Link to={`/products/${product.id}`}>
                                             <span aria-hidden="true" className="absolute inset-0" />
                                             {product.name}
-                                        </a>
+                                        </Link>
                                     </h3>
                                     <p className="mt-1 text-sm text-gray-500">{product.color}</p>
                                 </div>

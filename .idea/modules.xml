@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../Shelzee-Admin/.idea/Shelzee-Admin.iml" filepath="$PROJECT_DIR$/../Shelzee-Admin/.idea/Shelzee-Admin.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/shelzee-client.iml" filepath="$PROJECT_DIR$/.idea/shelzee-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../shelzee-server/.idea/shelzee-server.iml" filepath="$PROJECT_DIR$/../shelzee-server/.idea/shelzee-server.iml" />
     </modules>
   </component>
 </project>

@@ -1,8 +1,9 @@
-export default function Blogs({ posts }) {
+export default function Blogs() {
 
-    return(
-        <article className="blogs">
-            <h1> Blogs </h1>
-        </article>
+
+    return (
+        <div className="blogs">
+            <h1> Blogs Section</h1>
+        </div>
     )
 }
