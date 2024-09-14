@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 
 const clientId = '756817282935-lpjt725ikqbtq8th1vluapufil479psl.apps.googleusercontent.com';
 
@@ -31,34 +31,70 @@ const GoogleIcon = () => (
     </svg>
 );
 
-export default function Registration() {
+export default function Registration(props) {
+    let [userInput, setUserInput] = useState({
+        name : '', contact : '', password : ''
+    });
+
+    let navigate = useNavigate();
 
     const handleGoogleLoginSuccess = (response) => {
         console.log(response);
     };
-
-
     const handleGoogleLoginFailure = (error) => {
         console.error('Google login failed:', error);
     };
+    let getUserName = (e) =>{
+        setUserInput((preve)=>{
+            return{
+                ...preve,
+                name: e.target.value
+            }
+        })
+    }
+    let getUserContact = (e) =>{
+        setUserInput((preve)=>{
+            return{
+                ...preve,
+                contact: e.target.value
+            }
+        })
+    }
+    let getUserPassowrd = (e) =>{
+        setUserInput((preve)=>{
+            return{
+                ...preve,
+                password: e.target.value
+            }
+        })
+    }
+    let onSubmit = (e) =>{
+        e.preventDefault();
+        let { name, contact, password } = userInput;
+        let user ={
+            name: name, contact: contact,password: password,
+        }
+        props.createNewUser(user)
+
+    }
+
 
     return (
         <GoogleOAuthProvider clientId={clientId}>
             <div className="flex min-h-full flex-1 flex-col lg:flex-row lg:justify-center px-6 py-12 lg:px-8">
                 {/* Video Section */}
-                <div className="hidden lg:flex lg:w-1/2 lg:items-center lg:justify-center">
-                    <video
-                        src={require('../../images/ShellZee.lk.mp4')}
-                        alt="Your Company"
-                        className="w-full max-h-screen object-cover"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                    />
-                </div>
+                {/*<div className="hidden lg:flex lg:w-1/2 lg:items-center lg:justify-center">*/}
+                {/*    <video*/}
+                {/*        src={require('../../images/ShellZee.lk.mp4')}*/}
+                {/*        alt="Your Company"*/}
+                {/*        className="w-full max-h-screen object-cover"*/}
+                {/*        autoPlay*/}
+                {/*        loop*/}
+                {/*        muted*/}
+                {/*        playsInline*/}
+                {/*    />*/}
+                {/*</div>*/}
 
-                {/* Registration Form */}
                 <div className="flex-1 sm:mx-auto sm:w-full sm:max-w-sm lg:w-1/2 lg:py-16">
                     <div className="sm:mx-auto sm:w-full sm:max-w-sm lg:hidden">
                         <video
@@ -76,7 +112,7 @@ export default function Registration() {
                         <h2 className="mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                             Create an account today!
                         </h2>
-                        <form action="#" method="POST" className="space-y-6">
+                        <form onSubmit={onSubmit} method="POST" className="space-y-6">
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
                                     Name
@@ -84,6 +120,8 @@ export default function Registration() {
                                 <div className="mt-2">
                                     <input
                                         id="name"
+                                        value={userInput.name}
+                                        onChange={getUserName}
                                         name="name"
                                         type="name"
                                         required
@@ -94,11 +132,13 @@ export default function Registration() {
                             </div>
                             <div>
                                 <label htmlFor="contact" className="block text-sm font-medium leading-6 text-gray-900">
-                                    Email or Phone Number
+                                    Email
                                 </label>
                                 <div className="mt-2">
                                     <input
                                         id="contact"
+                                        value={userInput.contact}
+                                        onChange={getUserContact}
                                         name="contact"
                                         type="text"
                                         required
@@ -118,6 +158,8 @@ export default function Registration() {
                                 <div className="mt-2">
                                     <input
                                         id="password"
+                                        value={userInput.password}
+                                        onChange={getUserPassowrd}
                                         name="password"
                                         type="password"
                                         required
@@ -158,7 +200,7 @@ export default function Registration() {
 
                         <div className="mt-6 text-center">
                             <p className="text-sm text-gray-600">
-                                Already have an account? <Link to="/login" className="font-semibold text-indigo-600 hover:text-indigo-500">Login</Link>
+                                Already have an account? <Link to="/sign-in" className="font-semibold text-indigo-600 hover:text-indigo-500">Login</Link>
                             </p>
                         </div>
                     </div>
