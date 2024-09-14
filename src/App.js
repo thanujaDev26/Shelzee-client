@@ -12,18 +12,28 @@ import { useState, useEffect } from "react";
 import Products from "./components/Products/Products";
 import Template from "./components/Products/Template";
 import Dashboard from "./components/Admin/Dashboard";
+import ProtectedRoute from "./components/Admin/ProtectedRoute";
 
 function App() {
     const [isUserLogged, setIsUserLogged] = useState(false);
     const [loggedUser, setLoggedUser] = useState({ name: '', contact: '' });
     const [isUserLoggedout, setIsUserLoggedout] = useState(false);
     const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+
     useEffect(() => {
-        // Restore login state from localStorage
+        // Restore login state from localStorage for both user and admin
         const savedUser = localStorage.getItem('loggedUser');
+        const savedAdmin = localStorage.getItem('admin');
+
         if (savedUser) {
             setLoggedUser(JSON.parse(savedUser));
             setIsUserLogged(true);
+        }
+
+        if (savedAdmin) {
+            setLoggedUser(JSON.parse(savedAdmin));
+            setIsUserLogged(true);
+            setIsAdminLoggedIn(true);  // Set admin logged-in state
         }
     }, []);
 
@@ -33,13 +43,15 @@ function App() {
         setLoggedUser({ name: '', contact: '' });
         setIsUserLogged(false);
         setIsUserLoggedout(false);
+        setIsAdminLoggedIn(false);  // Clear admin state on sign out
     };
 
     const setUserLoggedOut = (value) => {
         setIsUserLoggedout(value);
-        setIsAdminLoggedIn(false)
+        setIsAdminLoggedIn(false);
         localStorage.removeItem('loggedUser');
         localStorage.removeItem('user');
+        localStorage.removeItem('admin'); // Remove admin if logged out
     };
 
     const createNewUser = async (user) => {
@@ -109,7 +121,7 @@ function App() {
                             contact: storedUser.contact
                         });
                         localStorage.setItem('loggedUser', JSON.stringify(storedUser));
-                        localStorage.setItem('admin', JSON.stringify(storedUser));
+                        localStorage.setItem('admin', JSON.stringify(storedUser)); // Store admin state
                         setIsUserLogged(true);
                         callback(true);
                         setIsAdminLoggedIn(true);
@@ -133,7 +145,7 @@ function App() {
 
     return (
         <div>
-            <Navbar loggedUser={loggedUser} isUserLogged={isUserLogged} signOut={signOut} setUserLoggedOut={setUserLoggedOut} isAdminLoggedIn={isAdminLoggedIn}/>
+            <Navbar loggedUser={loggedUser} isUserLogged={isUserLogged} signOut={signOut} setUserLoggedOut={setUserLoggedOut} isAdminLoggedIn={isAdminLoggedIn} />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/home" element={<Home />} />
@@ -144,13 +156,14 @@ function App() {
                 <Route path="/join-us" element={<Joinus />} />
                 <Route path="/sign-in" element={<Login getSignUser={getSignUser} getAdminSign={getAdminSign} />} />
                 <Route path="/create-account" element={<Registration createNewUser={createNewUser} />} />
-                <Route path="/admin-dashboard" element={<Dashboard />} />
                 <Route path="/admin-sign" element={<Login getAdminSign={getAdminSign} getSignUser={getSignUser} />} />
-                <Route path="/manage-products" element={<Dashboard/>}/>
-                <Route path="/manage-users" element={<Dashboard/>}/>
-                <Route path="/manage-blogs" element={<Dashboard/>}/>
-                <Route path="/manage-info" element={<Dashboard/>}/>
-                <Route path="/manage-adds" element={<Dashboard/>}/>
+
+                <Route path="/admin-dashboard" element={<ProtectedRoute element={<Dashboard />} isAdminLoggedIn={isAdminLoggedIn} />} />
+                <Route path="/manage-products" element={<ProtectedRoute element={<Dashboard />} isAdminLoggedIn={isAdminLoggedIn} />} />
+                <Route path="/manage-users" element={<ProtectedRoute element={<Dashboard />} isAdminLoggedIn={isAdminLoggedIn} />} />
+                <Route path="/manage-blogs" element={<ProtectedRoute element={<Dashboard />} isAdminLoggedIn={isAdminLoggedIn} />} />
+                <Route path="/manage-info" element={<ProtectedRoute element={<Dashboard />} isAdminLoggedIn={isAdminLoggedIn} />} />
+                <Route path="/manage-adds" element={<ProtectedRoute element={<Dashboard />} isAdminLoggedIn={isAdminLoggedIn} />} />
             </Routes>
         </div>
     );
